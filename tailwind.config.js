@@ -7,4 +7,5 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  prefix: 't-', // Add this line to use "t-" prefix for all Tailwind classes
 }
