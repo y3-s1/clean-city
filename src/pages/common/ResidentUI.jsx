@@ -1,12 +1,14 @@
 import { Route, Routes } from 'react-router-dom'
 import HomeResident from './HomeResident'
+import HeaderResident from '../../components/common/HeaderResident'
 
 const ResidentUI = () => {
   return (
     <>
-        <Routes>
-            <Route path="/" element={<HomeResident />}></Route>
-        </Routes>
+      <HeaderResident />
+      <Routes>
+          <Route path="/" element={<HomeResident />}></Route>
+      </Routes>
     </>
   )
 }

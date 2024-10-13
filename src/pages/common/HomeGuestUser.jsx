@@ -1,8 +1,11 @@
-import React from 'react'
+import HeaderGuestUser from "../../components/common/HeaderGuestUser"
 
 const HomeGuestUser = () => {
   return (
-    <div>HomeGuestUser</div>
+    <>
+      <HeaderGuestUser></HeaderGuestUser>
+      <div>HomeGuestUser</div>
+    </>
   )
 }
 
