@@ -1,21 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'; // Add deleteDoc
 import { db } from '../../firebase/firebase';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Button,
-  Grid,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
 
 const categoryMap = {
   1: 'Household Waste',
@@ -73,87 +59,74 @@ const SpecialRequestList = () => {
   };
 
   if (loading) {
-    return (
-      <div className="d-flex justify-content-center">
-        <CircularProgress />
-      </div>
-    );
+    return <p>Loading requests...</p>;
   }
 
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    return <p>{error}</p>;
   }
 
   // Filter requests based on selected filter
   const filteredRequests = filter === 'all' 
     ? requests 
-    : requests.filter((request) => request.status.toLowerCase() === filter);
+    : requests.filter(request => request.status.toLowerCase() === filter);
 
   return (
-    <div className="container display-6">
-      <h1 className="display-6 mb-4 mt-3 text-center">Special Waste Collection Requests</h1>
+    <div className="container">
+      <h1 className="display-6 mb-2 mt-3">Collection Request List</h1>
 
       {/* Filter options */}
       <div className="d-flex justify-content-end mb-4">
-        <FormControl variant="outlined" size="small" className="w-auto">
-          <InputLabel>Filter by Status</InputLabel>
-          <Select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            label="Filter by Status"
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="pending">Pending</MenuItem>
-            <MenuItem value="accepted">Accepted</MenuItem>
-            <MenuItem value="cancelled">Cancelled</MenuItem>
-          </Select>
-        </FormControl>
+        <select
+          className="form-select w-auto" // Set width to auto
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
       </div>
 
       {filteredRequests.length === 0 ? (
-        <Alert severity="info">No requests found</Alert>
+        <p>No requests found</p>
       ) : (
-        <Grid container spacing={4}>
+        <div className="row">
           {filteredRequests.map((request) => (
-            <Grid item xs={12} key={request.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Location: {request.location}
-                  </Typography>
-                  <Typography variant="body2">
+            <div className="col-12 mb-4" key={request.id}>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">Location: {request.location}</h5>
+                  <p className="card-text">
                     <strong>Pickup Date:</strong> {request.pickupDate} <br />
                     <strong>Pickup Time:</strong> {request.pickupTime} <br />
                     <strong>Total Charge:</strong> Rs.{request.totalCharge.toFixed(2)} <br />
                     <strong>Payment Method:</strong> {request.paymentMethod} <br />
-                    <strong>Categories:</strong>{' '}
-                    {request.selectedCategories.map((cat) => (
+                    <strong>Categories:</strong> {request.selectedCategories.map(cat => (
                       <span key={cat.id}>
                         {categoryMap[cat.id] || 'Unknown Category'} (Amount: {cat.amount} kg)
                         {request.selectedCategories.length - 1 !== cat.id && ', '}
                       </span>
-                    ))}
-                  </Typography>
-                </CardContent>
-                <CardActions className={`d-flex justify-content-between ${statusStyles[request.status.toLowerCase()]}`}>
-                  <Typography variant="body2">
-                    <strong>Status:</strong> {request.status}
-                  </Typography>
+                    ))} <br />
+                  </p>
+                </div>
+                <div className={`card-footer ${statusStyles[request.status.toLowerCase()]}`}>
+                  <strong>Status:</strong> {request.status}
                   {/* Delete button: only show if status is pending or cancelled */}
                   {['pending', 'cancelled'].includes(request.status.toLowerCase()) && (
-                    <Button
-                      variant="contained"
-                      color="error"
+                    <button 
+                      className="btn btn-danger float-end" 
                       onClick={() => handleDelete(request.id)}
                     >
                       Delete
-                    </Button>
+                    </button>
                   )}
-                </CardActions>
-              </Card>
-            </Grid>
+                </div>
+              </div>
+            </div>
           ))}
-        </Grid>
+        </div>
       )}
     </div>
   );
