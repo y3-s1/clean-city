@@ -3,7 +3,7 @@ import React from 'react';
 const SpecialWasteHelp = () => {
   return (
     <div className="container py-4 bg-light">
-      <h1 className="display-4 mb-4">Special Waste Help</h1>
+      <h1 className="display-6 mb-2">Special Waste Help</h1>
       <p className="lead mb-5">Help and guidelines on special waste collection are detailed below.</p>
 
       {/* Household Waste */}
