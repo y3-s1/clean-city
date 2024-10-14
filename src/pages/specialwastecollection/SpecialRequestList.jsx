@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'; // Add deleteDoc
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -25,6 +25,7 @@ const SpecialRequestList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all'); // Filter state
+  const [searchTerm, setSearchTerm] = useState(''); // Search state
 
   const userId = '8oO1oaRzfEWFaHJaOCUk'; // Fixed user ID
 
@@ -66,19 +67,28 @@ const SpecialRequestList = () => {
     return <p>{error}</p>;
   }
 
-  // Filter requests based on selected filter
-  const filteredRequests = filter === 'all' 
-    ? requests 
-    : requests.filter(request => request.status.toLowerCase() === filter);
+  // Filter requests based on selected filter and search term
+  const filteredRequests = requests
+    .filter(request => 
+      (filter === 'all' || request.status.toLowerCase() === filter) &&
+      request.location.toLowerCase().includes(searchTerm.toLowerCase()) // Filter by location
+    );
 
   return (
     <div className="container">
-      <h1 className="display-6 mb-2 mt-3">Collection Request List</h1>
+      <h1 className="display-6 mb-4 mt-3">Collection Request List</h1>
 
-      {/* Filter options */}
+      {/* Filter and search bar */}
       <div className="d-flex justify-content-end mb-4">
+        <input
+          type="text"
+          className="form-control me-2 w-50" // Set width for the search bar and space between buttons
+          placeholder="Search by address"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <select
-          className="form-select w-auto" // Set width to auto
+          className="form-select w-auto" // Set width to auto for the filter
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
