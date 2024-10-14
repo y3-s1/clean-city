@@ -3,8 +3,10 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, 
-  Typography, TextField, Select, MenuItem, FormControl, InputLabel
+  Typography, Select, MenuItem, FormControl, InputLabel, Button
 } from '@mui/material';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const categoryMap = {
@@ -51,11 +53,16 @@ const MonitorWaste = () => {
   if (loading) return <Typography>Loading waste data...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;
 
-  const filteredWasteData = wasteData.filter(waste => 
-    waste.status.toLowerCase() === 'accepted' &&
-    (categoryFilter === '' || waste.selectedCategories.some(cat => categoryMap[cat.id].toLowerCase().includes(categoryFilter.toLowerCase()))) &&
-    (dateFilter === 'all' || new Date(waste.pickupDate) >= new Date(dateFilter))
-  );
+  const filteredWasteData = wasteData.filter(waste => {
+    const isAccepted = waste.status.toLowerCase() === 'accepted';
+    const matchesCategory = categoryFilter === '' || 
+      waste.selectedCategories.some(cat => 
+        categoryMap[cat.id]?.toLowerCase().includes(categoryFilter.toLowerCase())
+      );
+    const matchesDate = dateFilter === 'all' || new Date(waste.pickupDate) >= new Date(dateFilter);
+  
+    return isAccepted && matchesCategory && matchesDate;
+  });
 
   const aggregatedData = filteredWasteData.reduce((acc, waste) => {
     waste.selectedCategories.forEach(cat => {
@@ -64,11 +71,40 @@ const MonitorWaste = () => {
         acc[categoryName] = { amount: 0, cost: 0 };
       }
       acc[categoryName].amount += Number(cat.amount);
-      // Assuming the cost is proportional to the amount for each category
       acc[categoryName].cost += (Number(cat.amount) / waste.selectedCategories.reduce((total, c) => total + Number(c.amount), 0)) * waste.totalCharge;
     });
     return acc;
   }, {});
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text('Special Waste Monitoring Report', 14, 22);
+    
+    // Table Header
+    const tableHead = [['Category', 'Total Amount (kg)', 'Total Cost (Rs.)']];
+    const tableData = Object.entries(aggregatedData).map(([category, data]) => [
+      category,
+      data.amount.toFixed(2),
+      data.cost.toFixed(2),
+    ]);
+
+    // Table
+    autoTable(doc, {
+      head: tableHead,
+      body: tableData,
+      startY: 30,
+      theme: 'grid',
+      headStyles: { fillColor: '#8BC34A' },
+      styles: { cellPadding: 3, fontSize: 10 },
+      margin: { top: 10 },
+    });
+
+    // Save PDF
+    doc.save('waste_monitoring_report.pdf');
+  };
 
   return (
     <div className="container mt-4">
@@ -76,14 +112,6 @@ const MonitorWaste = () => {
       
       {/* Filter and search bar */}
       <div className="d-flex justify-content-end mb-4">
-        <TextField
-          className="me-2"
-          style={{ width: '50%' }}
-          label="Search by category"
-          variant="outlined"
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-        />
         <FormControl variant="outlined" style={{ width: 'auto' }}>
           <InputLabel>Date Filter</InputLabel>
           <Select
@@ -98,6 +126,14 @@ const MonitorWaste = () => {
           </Select>
         </FormControl>
       </div>
+
+      <Button
+        variant="contained"
+        style={{ backgroundColor: '#8BC34A', color: '#FFFFFF', marginBottom: '20px' }}
+        onClick={generatePDF}
+      >
+        Generate PDF
+      </Button>
 
       <Typography variant="h6" gutterBottom>Total Accepted Waste by Category</Typography>
       <TableContainer component={Paper} className="mb-4">

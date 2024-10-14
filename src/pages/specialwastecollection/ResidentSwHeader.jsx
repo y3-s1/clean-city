@@ -1,7 +1,7 @@
 import React from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import { FaList, FaPlus, FaQuestionCircle } from 'react-icons/fa'; // Importing specific icons
+import { FaList, FaPlus, FaQuestionCircle, FaChartLine } from 'react-icons/fa'; // Importing specific icons
 
 const ResidentSwHeader = () => {
   const location = useLocation();
@@ -28,21 +28,21 @@ const ResidentSwHeader = () => {
       </Nav.Link>
       <Nav.Link 
         as={Link} 
+        to="/resident/specialWaste/monitorwaste" 
+        active={location.pathname === "/resident/specialWaste/monitorwaste"}
+        className="mb-2 text-white d-flex align-items-center" // Added flex utilities
+      >
+        <FaChartLine className="me-2" /> {/* Help icon */}
+        Monitor Waste
+      </Nav.Link>
+      <Nav.Link 
+        as={Link} 
         to="/resident/specialWaste/help" 
         active={location.pathname === "/resident/specialWaste/help"}
         className="mb-2 text-white d-flex align-items-center" // Added flex utilities
       >
         <FaQuestionCircle className="me-2" /> {/* Help icon */}
         Help
-      </Nav.Link>
-      <Nav.Link 
-        as={Link} 
-        to="/resident/specialWaste/monitorwaste" 
-        active={location.pathname === "/resident/specialWaste/monitorwaste"}
-        className="mb-2 text-white d-flex align-items-center" // Added flex utilities
-      >
-        <FaQuestionCircle className="me-2" /> {/* Help icon */}
-        Monitor Waste
       </Nav.Link>
     </Nav>
   );
