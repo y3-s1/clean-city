@@ -1,5 +1,5 @@
-import { addDoc, collection } from 'firebase/firestore';
-import React, { useState } from 'react';
+import { addDoc, collection, getDoc, doc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase/firebase';
 
 const wasteCategories = [
@@ -21,6 +21,26 @@ const ResidentSwRequest = () => {
   const [totalCharge, setTotalCharge] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [name, setName] = useState(''); // New state for name
+
+  const userId = '8oO1oaRzfEWFaHJaOCUk'; // Fixed user ID
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userDocRef = doc(db, 'Users', userId);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setName(userData.name || ''); // Set name from user data
+        setLocation(userData.address || ''); // Set address from user data
+      } else {
+        console.log('No such document!');
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleCategoryChange = (index, field, value) => {
     const updatedCategories = [...selectedCategories];
@@ -54,7 +74,6 @@ const ResidentSwRequest = () => {
       return;
     }
 
-    const userId = '8oO1oaRzfEWFaHJaOCUk'; // Fixed user ID
     const swCollectionRef = collection(db, 'Users', userId, 'SpecialWasteRequests');
 
     try {
@@ -68,6 +87,7 @@ const ResidentSwRequest = () => {
         termsAccepted,
         status: 'Pending', // Fixed value for status
         timestamp: new Date(),
+        name, // Include name in the document
       });
 
       alert('Request submitted successfully!');
@@ -86,6 +106,18 @@ const ResidentSwRequest = () => {
             <div className="card-body">
               <h2 className="card-title text-center mb-4">Special Waste Collection Request</h2>
               <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="name" className="form-label">Name:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
                 {selectedCategories.map((category, index) => (
                   <div key={index} className="mb-3">
                     <div className="row">
@@ -122,7 +154,7 @@ const ResidentSwRequest = () => {
                     </div>
                   </div>
                 ))}
-                
+
                 <div className="mb-3">
                   <button type="button" className="btn btn-secondary" onClick={addCategory}>
                     Add Another Category
