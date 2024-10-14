@@ -9,7 +9,7 @@ const SpecialRequestUI = () => {
   return (
     <div>
         <ResidentSwHeader></ResidentSwHeader>
-        sdfdsf
+        
         <Routes>
             <Route>
                 <Route path="/specialRequest" element={<ResidentSwRequest />}></Route>
