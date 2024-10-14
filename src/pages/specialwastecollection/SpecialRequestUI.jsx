@@ -7,16 +7,19 @@ import SpecialWasteHelp from './SpecialWasteHelp'
 
 const SpecialRequestUI = () => {
   return (
-    <div>
-        <ResidentSwHeader></ResidentSwHeader>
-        
-        <Routes>
-            <Route>
-                <Route path="/specialRequest" element={<ResidentSwRequest />}></Route>
-                <Route path="/" element={<SpecialRequestList />}></Route>
-                <Route path="/help" element={<SpecialWasteHelp />}></Route>
-            </Route>
-        </Routes>
+    <div className="d-flex" style={{ minHeight: '100vh' }}>
+      <div className="flex-shrink-0">
+        <ResidentSwHeader />
+      </div>
+      <div className="flex-grow-1 overflow-auto">
+        <div className="p-3">
+          <Routes>
+            <Route path="/specialRequest" element={<ResidentSwRequest />} />
+            <Route path="/" element={<SpecialRequestList />} />
+            <Route path="/help" element={<SpecialWasteHelp />} />
+          </Routes>
+        </div>
+      </div>
     </div>
   )
 }
