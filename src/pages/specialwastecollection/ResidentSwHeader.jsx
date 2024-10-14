@@ -8,7 +8,6 @@ const ResidentSwHeader = () => {
 
   return (
     <Nav className="flex-column bg-success text-white p-3" style={{ width: '250px', height: '100%' }}>
-      <h3 className="mb-4">Special Waste Management</h3>
       <Nav.Link 
         as={Link} 
         to="/resident/specialWaste/" 

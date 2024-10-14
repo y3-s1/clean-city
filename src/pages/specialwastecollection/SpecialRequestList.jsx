@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'; // Add deleteDoc
 import { db } from '../../firebase/firebase';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -48,6 +48,15 @@ const SpecialRequestList = () => {
 
     fetchRequests();
   }, []);
+
+  const handleDelete = async (requestId) => {
+    try {
+      await deleteDoc(doc(db, 'Users', userId, 'SpecialWasteRequests', requestId));
+      setRequests((prevRequests) => prevRequests.filter((request) => request.id !== requestId));
+    } catch (err) {
+      console.error('Error deleting request:', err);
+    }
+  };
 
   if (loading) {
     return <p>Loading requests...</p>;
@@ -104,6 +113,15 @@ const SpecialRequestList = () => {
                 </div>
                 <div className={`card-footer ${statusStyles[request.status.toLowerCase()]}`}>
                   <strong>Status:</strong> {request.status}
+                  {/* Delete button: only show if status is pending or cancelled */}
+                  {['pending', 'cancelled'].includes(request.status.toLowerCase()) && (
+                    <button 
+                      className="btn btn-danger float-end" 
+                      onClick={() => handleDelete(request.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
