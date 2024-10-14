@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
+import confirmationAudio from '../../../assets/sounds/confirmation.mp3';
 
 const QRScanner = () => {
   const [manualInput, setManualInput] = useState('');
@@ -9,8 +10,13 @@ const QRScanner = () => {
 
   const handleManualSubmit = () => {
     if (manualInput) {
-      navigate(`/confirmation/${manualInput}`);
+      navigate(`/collector/confirmationPage/${manualInput}`);
     }
+  };
+
+  const playConfirmationSound = () => {
+    const audio = new Audio(confirmationAudio);
+    audio.play();
   };
 
   useEffect(() => {
@@ -29,6 +35,7 @@ const QRScanner = () => {
 
     html5QrCodeScanner.render(
       (decodedText) => {
+        playConfirmationSound();
         navigate(`/collector/confirmationPage/${decodedText}`);
       },
       (errorMessage) => {
