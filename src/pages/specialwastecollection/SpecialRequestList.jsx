@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'; // Add deleteDoc
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
 
 const categoryMap = {
   1: 'Household Waste',
@@ -59,74 +73,87 @@ const SpecialRequestList = () => {
   };
 
   if (loading) {
-    return <p>Loading requests...</p>;
+    return (
+      <div className="d-flex justify-content-center">
+        <CircularProgress />
+      </div>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <Alert severity="error">{error}</Alert>;
   }
 
   // Filter requests based on selected filter
   const filteredRequests = filter === 'all' 
     ? requests 
-    : requests.filter(request => request.status.toLowerCase() === filter);
+    : requests.filter((request) => request.status.toLowerCase() === filter);
 
   return (
-    <div className="container">
-      <h1 className="my-4">Collection Request List</h1>
+    <div className="container display-6">
+      <h1 className="display-6 mb-4 mt-3 text-center">Special Waste Collection Requests</h1>
 
       {/* Filter options */}
       <div className="d-flex justify-content-end mb-4">
-        <select
-          className="form-select w-auto" // Set width to auto
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="all">All</option>
-          <option value="pending">Pending</option>
-          <option value="accepted">Accepted</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+        <FormControl variant="outlined" size="small" className="w-auto">
+          <InputLabel>Filter by Status</InputLabel>
+          <Select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            label="Filter by Status"
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="pending">Pending</MenuItem>
+            <MenuItem value="accepted">Accepted</MenuItem>
+            <MenuItem value="cancelled">Cancelled</MenuItem>
+          </Select>
+        </FormControl>
       </div>
 
       {filteredRequests.length === 0 ? (
-        <p>No requests found</p>
+        <Alert severity="info">No requests found</Alert>
       ) : (
-        <div className="row">
+        <Grid container spacing={4}>
           {filteredRequests.map((request) => (
-            <div className="col-12 mb-4" key={request.id}>
-              <div className="card">
-                <div className="card-body">
-                  <h5 className="card-title">Location: {request.location}</h5>
-                  <p className="card-text">
+            <Grid item xs={12} key={request.id}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Location: {request.location}
+                  </Typography>
+                  <Typography variant="body2">
                     <strong>Pickup Date:</strong> {request.pickupDate} <br />
                     <strong>Pickup Time:</strong> {request.pickupTime} <br />
                     <strong>Total Charge:</strong> Rs.{request.totalCharge.toFixed(2)} <br />
                     <strong>Payment Method:</strong> {request.paymentMethod} <br />
-                    <strong>Categories:</strong> {request.selectedCategories.map(cat => (
+                    <strong>Categories:</strong>{' '}
+                    {request.selectedCategories.map((cat) => (
                       <span key={cat.id}>
-                        {categoryMap[cat.id] || `Unknown Category`} (Amount: {cat.amount} kg)
+                        {categoryMap[cat.id] || 'Unknown Category'} (Amount: {cat.amount} kg)
                         {request.selectedCategories.length - 1 !== cat.id && ', '}
                       </span>
-                    ))} <br />
-                  </p>
-                </div>
-                <div className={`card-footer ${statusStyles[request.status.toLowerCase()]}`}>
-                  <strong>Status:</strong> {request.status}
+                    ))}
+                  </Typography>
+                </CardContent>
+                <CardActions className={`d-flex justify-content-between ${statusStyles[request.status.toLowerCase()]}`}>
+                  <Typography variant="body2">
+                    <strong>Status:</strong> {request.status}
+                  </Typography>
                   {/* Delete button: only show if status is pending or cancelled */}
                   {['pending', 'cancelled'].includes(request.status.toLowerCase()) && (
-                    <button 
-                      className="btn btn-danger float-end" 
+                    <Button
+                      variant="contained"
+                      color="error"
                       onClick={() => handleDelete(request.id)}
                     >
                       Delete
-                    </button>
+                    </Button>
                   )}
-                </div>
-              </div>
-            </div>
+                </CardActions>
+              </Card>
+            </Grid>
           ))}
-        </div>
+        </Grid>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { Card, CardContent, Typography, IconButton, Collapse, List, ListItem, ListItemText } from '@mui/material';
 
 const SpecialWasteHelp = () => {
   const [openCategories, setOpenCategories] = useState({});
@@ -77,27 +78,35 @@ const SpecialWasteHelp = () => {
 
   return (
     <div className="container py-4 bg-light">
-      <h1 className="display-6 mb-2">Special Waste Help</h1>
-      <p className="lead mb-5">Help and guidelines on special waste collection are detailed below.</p>
+      <h1 className="display-6 mb-4">Special Waste Help</h1>
+      <p className="lead mb-4">Guidelines for special waste collection are outlined below. Click a category to view more details.</p>
 
       {categories.map((category, index) => (
-        <div key={index} className="mb-4">
-          <h2 className="h4 mb-3 d-flex align-items-center" style={{ cursor: 'pointer' }} onClick={() => toggleCategory(category.title)}>
-            {category.title}
-            <span className="ms-auto">
-              {openCategories[category.title] ? <FaChevronUp /> : <FaChevronDown />}
-            </span>
-          </h2>
-          <div className={`collapse ${openCategories[category.title] ? 'show' : ''}`}>
-            <ul className="list-group">
-              {category.items.map((item, i) => (
-                <li className="list-group-item" key={i}>
-                  <strong>{item.label}:</strong> {item.description}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <Card key={index} className="mb-4">
+          <CardContent>
+            <div className="d-flex justify-content-between align-items-center">
+              <Typography variant="h6" component="h2">
+                {category.title}
+              </Typography>
+              <IconButton onClick={() => toggleCategory(category.title)}>
+                {openCategories[category.title] ? <FaChevronUp /> : <FaChevronDown />}
+              </IconButton>
+            </div>
+
+            <Collapse in={openCategories[category.title]}>
+              <List component="div" disablePadding>
+                {category.items.map((item, i) => (
+                  <ListItem key={i} className="px-4 py-2">
+                    <ListItemText
+                      primary={<strong>{item.label}</strong>}
+                      secondary={item.description}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

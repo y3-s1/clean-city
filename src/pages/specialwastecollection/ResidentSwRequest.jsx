@@ -1,6 +1,12 @@
-import { addDoc, collection, getDoc, doc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { addDoc, collection, getDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
+
+// Bootstrap imports
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// Material UI imports
+import { TextField, Button, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 const wasteCategories = [
   { id: 1, name: "Household Waste", baseCharge: 100 },
@@ -74,7 +80,6 @@ const ResidentSwRequest = () => {
       return;
     }
 
-    // Validate minimum amount
     const hasInvalidAmount = selectedCategories.some(category => category.amount < 20);
     if (hasInvalidAmount) {
       alert('Each category must have an amount of at least 20 kg.');
@@ -98,7 +103,6 @@ const ResidentSwRequest = () => {
       });
 
       alert('Request submitted successfully!');
-      // Reset form fields if needed
     } catch (error) {
       console.error('Error submitting request: ', error);
       alert('Failed to submit request');
@@ -106,153 +110,159 @@ const ResidentSwRequest = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-3">
       <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="card-title text-center mb-4">Special Waste Collection Request</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name:</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+        <div className="col-md-6">  {/* Controls the form width */}
+          <h2 className="text-center display-6 mb-4">Special Waste Collection Request</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <TextField
+                label="Name"
+                variant="outlined"
+                fullWidth
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            {selectedCategories.map((category, index) => (
+              <div key={index} className="row mb-3">
+                <div className="col-md-6">
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel>Select Waste Category</InputLabel>
+                    <Select
+                      value={category.id}
+                      onChange={(e) => handleCategoryChange(index, 'id', e.target.value)}
+                      label="Select Waste Category"
+                      required
+                    >
+                      {wasteCategories.map((cat) => (
+                        <MenuItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+
+                <div className="col-md-4">
+                  <TextField
+                    type="number"
+                    label="Amount (in kg)"
+                    variant="outlined"
+                    fullWidth
+                    value={category.amount || ''}
+                    onChange={(e) => handleCategoryChange(index, 'amount', e.target.value)}
                     required
                   />
                 </div>
 
-                {selectedCategories.map((category, index) => (
-                  <div key={index} className="mb-3">
-                    <div className="row">
-                      <div className="col-md-5">
-                        <select
-                          className="form-select"
-                          value={category.id}
-                          onChange={(e) => handleCategoryChange(index, 'id', e.target.value)}
-                          required
-                        >
-                          <option value="">Select Waste Category</option>
-                          {wasteCategories.map((cat) => (
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="col-md-5">
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Amount (in kg)"
-                          value={category.amount || ''} // Changed to avoid displaying 0
-                          onChange={(e) => handleCategoryChange(index, 'amount', e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-2">
-                        {index > 0 && (
-                          <button type="button" className="btn btn-danger" onClick={() => removeCategory(index)}>
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                <div className="col-md-2 d-flex align-items-center">
+                  {index > 0 && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => removeCategory(index)}
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
 
-                <div className="mb-3">
-                  <button type="button" className="btn btn-secondary" onClick={addCategory}>
-                    Add Another Category
-                  </button>
-                </div>
+            <Button className="mb-4" variant="text" color="primary" onClick={addCategory}>
+              + Add Another Category
+            </Button>
 
-                <div className="mb-3">
-                  <label htmlFor="pickupDate" className="form-label">Pickup Date:</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="pickupDate"
-                    value={pickupDate}
-                    onChange={(e) => setPickupDate(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="mb-3">
-                  <label htmlFor="pickupTime" className="form-label">Pickup Time:</label>
-                  <input
-                    type="time"
-                    className="form-control"
-                    id="pickupTime"
-                    value={pickupTime}
-                    onChange={(e) => setPickupTime(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="mb-3">
-                  <label htmlFor="location" className="form-label">Location:</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Enter your address"
-                    required
-                  />
-                </div>
+            <div className="row mb-4">
+              <div className="col-md-6">
+                <TextField
+                  type="date"
+                  label="Pickup Date"
+                  variant="outlined"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  value={pickupDate}
+                  onChange={(e) => setPickupDate(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <TextField
+                  type="time"
+                  label="Pickup Time"
+                  variant="outlined"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  value={pickupTime}
+                  onChange={(e) => setPickupTime(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
 
-                <div className="mb-3">
-                  <label htmlFor="totalCharge" className="form-label">Total Service Charge:</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="totalCharge"
-                    value={`Rs.${totalCharge.toFixed(2)}`}
-                    readOnly
-                  />
-                </div>
+            <div className="mb-4">
+              <TextField
+                label="Location"
+                variant="outlined"
+                fullWidth
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+              />
+            </div>
 
-                <div className="mb-3">
-                  <label htmlFor="paymentMethod" className="form-label">Payment Method:</label>
-                  <select
-                    className="form-select"
-                    id="paymentMethod"
-                    value={paymentMethod}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    required
-                  >
-                    <option value="">Select Payment Method</option>
-                    <option value="credit_card">Credit/Debit Card</option>
-                    <option value="cash_on_pickup">Cash on pickup</option>
-                  </select>
-                </div>
+            <div className="mb-4">
+              <TextField
+                label="Total Service Charge"
+                variant="outlined"
+                fullWidth
+                value={`Rs.${totalCharge.toFixed(2)}`}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
 
-                <div className="mb-3 form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="termsCheck"
+            <div className="mb-3">
+              <FormControl fullWidth variant="outlined">
+                <InputLabel>Payment Method</InputLabel>
+                <Select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  label="Payment Method"
+                  required
+                >
+                  <MenuItem value="credit_card">Credit/Debit Card</MenuItem>
+                  <MenuItem value="cash_on_pickup">Cash on pickup</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            <div className="mb-3">
+              <FormControlLabel
+                control={
+                  <Checkbox
                     checked={termsAccepted}
                     onChange={(e) => setTermsAccepted(e.target.checked)}
                     required
                   />
-                  <label className="form-check-label" htmlFor="termsCheck">
-                    I accept the <a href="#" onClick={(e) => { e.preventDefault(); alert('Terms and conditions document'); }}>terms and conditions</a>
-                  </label>
-                </div>
-                
-                <div className="d-grid">
-                  <button type="submit" className="btn btn-primary" disabled={!termsAccepted}>
-                    Submit Request
-                  </button>
-                </div>
-              </form>
+                }
+                label="I agree to the terms and conditions"
+              />
             </div>
-          </div>
+
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              type="submit"
+            >
+              Submit Request
+            </Button>
+          </form>
         </div>
       </div>
     </div>
