@@ -226,8 +226,7 @@ const ResidentSwRequest = () => {
                     required
                   >
                     <option value="">Select Payment Method</option>
-                    <option value="credit_card">Credit Card</option>
-                    <option value="debit_card">Debit Card</option>
+                    <option value="credit_card">Credit/Debit Card</option>
                     <option value="cash_on_pickup">Cash on pickup</option>
                   </select>
                 </div>
