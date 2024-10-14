@@ -20,6 +20,8 @@ const categoryMap = {
   8: 'Special Event Waste',
 };
 
+
+
 const MonitorWaste = () => {
   const [wasteData, setWasteData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,17 +66,33 @@ const MonitorWaste = () => {
     return isAccepted && matchesCategory && matchesDate;
   });
 
+  const basePrices = {
+    1: 100,  // Household Waste
+    2: 100,  // Recyclable Waste
+    3: 250,  // E-Waste
+    4: 400,  // Hazardous Waste
+    5: 350,  // Bulky Waste
+    6: 200,  // Green Waste
+    7: 150,  // Textile Waste
+    8: 300   // Special Event Waste
+  };
+  
+  // Updated aggregatedData function
   const aggregatedData = filteredWasteData.reduce((acc, waste) => {
     waste.selectedCategories.forEach(cat => {
       const categoryName = categoryMap[cat.id] || 'Unknown Category';
       if (!acc[categoryName]) {
         acc[categoryName] = { amount: 0, cost: 0 };
       }
-      acc[categoryName].amount += Number(cat.amount);
-      acc[categoryName].cost += (Number(cat.amount) / waste.selectedCategories.reduce((total, c) => total + Number(c.amount), 0)) * waste.totalCharge;
+      const amount = Number(cat.amount);
+      const baseCharge = basePrices[cat.id] || 0;
+  
+      acc[categoryName].amount += amount;
+      acc[categoryName].cost += amount * baseCharge;  // Calculate cost using base charge
     });
     return acc;
   }, {});
+  
 
   const generatePDF = () => {
     const doc = new jsPDF();
