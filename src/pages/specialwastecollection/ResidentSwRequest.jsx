@@ -21,9 +21,9 @@ const ResidentSwRequest = () => {
   const [totalCharge, setTotalCharge] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [name, setName] = useState(''); // New state for name
+  const [name, setName] = useState('');
 
-  const userId = '8oO1oaRzfEWFaHJaOCUk'; // Fixed user ID
+  const userId = '8oO1oaRzfEWFaHJaOCUk';
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,8 +32,8 @@ const ResidentSwRequest = () => {
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        setName(userData.name || ''); // Set name from user data
-        setLocation(userData.address || ''); // Set address from user data
+        setName(userData.name || '');
+        setLocation(userData.address || '');
       } else {
         console.log('No such document!');
       }
@@ -74,6 +74,13 @@ const ResidentSwRequest = () => {
       return;
     }
 
+    // Validate minimum amount
+    const hasInvalidAmount = selectedCategories.some(category => category.amount < 20);
+    if (hasInvalidAmount) {
+      alert('Each category must have an amount of at least 20 kg.');
+      return;
+    }
+
     const swCollectionRef = collection(db, 'Users', userId, 'SpecialWasteRequests');
 
     try {
@@ -85,9 +92,9 @@ const ResidentSwRequest = () => {
         totalCharge,
         paymentMethod,
         termsAccepted,
-        status: 'Pending', // Fixed value for status
+        status: 'Pending',
         timestamp: new Date(),
-        name, // Include name in the document
+        name,
       });
 
       alert('Request submitted successfully!');
@@ -139,7 +146,7 @@ const ResidentSwRequest = () => {
                           type="number"
                           className="form-control"
                           placeholder="Amount (in kg)"
-                          value={category.amount}
+                          value={category.amount || ''} // Changed to avoid displaying 0
                           onChange={(e) => handleCategoryChange(index, 'amount', e.target.value)}
                           required
                         />
