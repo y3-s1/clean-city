@@ -4,6 +4,7 @@ import ResidentSwHeader from './ResidentSwHeader'
 import ResidentSwRequest from './ResidentSwRequest'
 import SpecialRequestList from './SpecialRequestList'
 import SpecialWasteHelp from './SpecialWasteHelp'
+import MonitorWaste from './monitorwaste'
 
 const SpecialRequestUI = () => {
   return (
@@ -17,6 +18,7 @@ const SpecialRequestUI = () => {
             <Route path="/specialRequest" element={<ResidentSwRequest />} />
             <Route path="/" element={<SpecialRequestList />} />
             <Route path="/help" element={<SpecialWasteHelp />} />
+            <Route path="/monitorwaste" element={<MonitorWaste />} />
           </Routes>
         </div>
       </div>

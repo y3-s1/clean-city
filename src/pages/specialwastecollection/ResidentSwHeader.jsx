@@ -35,6 +35,15 @@ const ResidentSwHeader = () => {
         <FaQuestionCircle className="me-2" /> {/* Help icon */}
         Help
       </Nav.Link>
+      <Nav.Link 
+        as={Link} 
+        to="/resident/specialWaste/monitorwaste" 
+        active={location.pathname === "/resident/specialWaste/monitorwaste"}
+        className="mb-2 text-white d-flex align-items-center" // Added flex utilities
+      >
+        <FaQuestionCircle className="me-2" /> {/* Help icon */}
+        Monitor Waste
+      </Nav.Link>
     </Nav>
   );
 };
