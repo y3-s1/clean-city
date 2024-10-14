@@ -16,7 +16,7 @@ const HeaderResident = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#my-waste">My Waste</Nav.Link>
+            <Nav.Link href="/resident/my-waste">My Waste</Nav.Link>
             <Nav.Link href="#events">Events</Nav.Link>
           </Nav>
 
