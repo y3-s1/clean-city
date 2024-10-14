@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const categoryMap = {
   1: 'Household Waste',
@@ -11,6 +12,12 @@ const categoryMap = {
   6: 'Green Waste',
   7: 'Textile Waste',
   8: 'Special Event Waste',
+};
+
+const statusStyles = {
+  pending: 'text-primary',    // Bootstrap class for blue
+  accepted: 'text-success',    // Bootstrap class for green
+  cancelled: 'text-danger',     // Bootstrap class for light red
 };
 
 const SpecialRequestList = () => {
@@ -50,30 +57,37 @@ const SpecialRequestList = () => {
   }
 
   return (
-    <div>
-      <h1>Collection Request List</h1>
+    <div className="container">
+      <h1 className="my-4">Collection Request List</h1>
       {requests.length === 0 ? (
         <p>No requests found</p>
       ) : (
-        <ul>
+        <div className="row">
           {requests.map((request) => (
-            <li key={request.id}>
-              <strong>Location:</strong> {request.location} <br />
-              <strong>Pickup Date:</strong> {request.pickupDate} <br />
-              <strong>Pickup Time:</strong> {request.pickupTime} <br />
-              <strong>Total Charge:</strong> Rs.{request.totalCharge.toFixed(2)} <br />
-              <strong>Payment Method:</strong> {request.paymentMethod} <br />
-              <strong>Status:</strong> {request.status} <br />
-              <strong>Categories:</strong> {request.selectedCategories.map(cat => (
-                <span key={cat.id}>
-                  {categoryMap[cat.id] || `Unknown Category`} (Amount: {cat.amount} kg)
-                  {request.selectedCategories.length - 1 !== cat.id && ', '}
-                </span>
-              ))} <br />
-              <hr />
-            </li>
+            <div className="col-md-4 mb-4" key={request.id}>
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">Location: {request.location}</h5>
+                  <p className="card-text">
+                    <strong>Pickup Date:</strong> {request.pickupDate} <br />
+                    <strong>Pickup Time:</strong> {request.pickupTime} <br />
+                    <strong>Total Charge:</strong> Rs.{request.totalCharge.toFixed(2)} <br />
+                    <strong>Payment Method:</strong> {request.paymentMethod} <br />
+                    <strong>Categories:</strong> {request.selectedCategories.map(cat => (
+                      <span key={cat.id}>
+                        {categoryMap[cat.id] || `Unknown Category`} (Amount: {cat.amount} kg)
+                        {request.selectedCategories.length - 1 !== cat.id && ', '}
+                      </span>
+                    ))} <br />
+                  </p>
+                </div>
+                <div className={`card-footer ${statusStyles[request.status.toLowerCase()]}`}>
+                  <strong>Status:</strong> {request.status}
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

@@ -66,7 +66,7 @@ const ResidentSwRequest = () => {
         totalCharge,
         paymentMethod,
         termsAccepted,
-        status: 'pending', // Fixed value for status
+        status: 'Pending', // Fixed value for status
         timestamp: new Date(),
       });
 
