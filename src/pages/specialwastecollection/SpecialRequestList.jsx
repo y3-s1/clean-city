@@ -15,15 +15,16 @@ const categoryMap = {
 };
 
 const statusStyles = {
-  pending: 'text-primary',    // Bootstrap class for blue
-  accepted: 'text-success',    // Bootstrap class for green
-  cancelled: 'text-danger',     // Bootstrap class for light red
+  pending: 'text-primary',
+  accepted: 'text-success',
+  cancelled: 'text-danger',
 };
 
 const SpecialRequestList = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState('all'); // Filter state
 
   const userId = '8oO1oaRzfEWFaHJaOCUk'; // Fixed user ID
 
@@ -56,15 +57,35 @@ const SpecialRequestList = () => {
     return <p>{error}</p>;
   }
 
+  // Filter requests based on selected filter
+  const filteredRequests = filter === 'all' 
+    ? requests 
+    : requests.filter(request => request.status.toLowerCase() === filter);
+
   return (
     <div className="container">
       <h1 className="my-4">Collection Request List</h1>
-      {requests.length === 0 ? (
+
+      {/* Filter options */}
+      <div className="mb-4">
+        <select
+          className="form-select"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+
+      {filteredRequests.length === 0 ? (
         <p>No requests found</p>
       ) : (
         <div className="row">
-          {requests.map((request) => (
-            <div className="col-md-4 mb-4" key={request.id}>
+          {filteredRequests.map((request) => (
+            <div className="col-12 mb-4" key={request.id}>
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">Location: {request.location}</h5>
