@@ -67,9 +67,9 @@ const SpecialRequestList = () => {
       <h1 className="my-4">Collection Request List</h1>
 
       {/* Filter options */}
-      <div className="mb-4">
+      <div className="d-flex justify-content-end mb-4">
         <select
-          className="form-select"
+          className="form-select w-auto" // Set width to auto
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
