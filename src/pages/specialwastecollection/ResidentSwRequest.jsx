@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase/firebase';
 
 const wasteCategories = [
-  { id: 1, name: "Household Waste", baseCharge: 20 },
-  { id: 2, name: "Recyclable Waste", baseCharge: 15 },
-  { id: 3, name: "E-Waste", baseCharge: 25 },
-  { id: 4, name: "Hazardous Waste", baseCharge: 40 },
-  { id: 5, name: "Bulky Waste", baseCharge: 35 },
-  { id: 6, name: "Green Waste", baseCharge: 20 },
-  { id: 7, name: "Textile Waste", baseCharge: 15 },
-  { id: 8, name: "Special Event Waste", baseCharge: 30 },
+  { id: 1, name: "Household Waste", baseCharge: 100 },
+  { id: 2, name: "Recyclable Waste", baseCharge: 100 },
+  { id: 3, name: "E-Waste", baseCharge: 250 },
+  { id: 4, name: "Hazardous Waste", baseCharge: 400 },
+  { id: 5, name: "Bulky Waste", baseCharge: 350 },
+  { id: 6, name: "Green Waste", baseCharge: 200 },
+  { id: 7, name: "Textile Waste", baseCharge: 150 },
+  { id: 8, name: "Special Event Waste", baseCharge: 300 },
 ];
 
 const ResidentSwRequest = () => {
