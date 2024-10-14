@@ -24,7 +24,6 @@ const MonitorWaste = () => {
   const [error, setError] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
 
   const userId = '8oO1oaRzfEWFaHJaOCUk'; // Fixed user ID
 
@@ -55,8 +54,7 @@ const MonitorWaste = () => {
   const filteredWasteData = wasteData.filter(waste => 
     waste.status.toLowerCase() === 'accepted' &&
     (categoryFilter === '' || waste.selectedCategories.some(cat => categoryMap[cat.id].toLowerCase().includes(categoryFilter.toLowerCase()))) &&
-    (dateFilter === 'all' || new Date(waste.pickupDate) >= new Date(dateFilter)) &&
-    waste.location.toLowerCase().includes(searchTerm.toLowerCase())
+    (dateFilter === 'all' || new Date(waste.pickupDate) >= new Date(dateFilter))
   );
 
   const aggregatedData = filteredWasteData.reduce((acc, waste) => {
@@ -73,34 +71,32 @@ const MonitorWaste = () => {
   }, {});
 
   return (
-    <div className="container mt-4 display-6">
+    <div className="container mt-4">
       <h1 className="display-6 mb-4">Special Waste Monitoring</h1>
       
-      <div className="row mb-4">
-        <div className="col-md-4">
-          <TextField
-            label="Search by category"
-            variant="outlined"
-            fullWidth
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          />
-        </div>
-        <div className="col-md-4">
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Date Filter</InputLabel>
-            <Select
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              label="Date Filter"
-            >
-              <MenuItem value="all">All Time</MenuItem>
-              <MenuItem value={new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>Last 7 Days</MenuItem>
-              <MenuItem value={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>Last 30 Days</MenuItem>
-              <MenuItem value={new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>Last 90 Days</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
+      {/* Filter and search bar */}
+      <div className="d-flex justify-content-end mb-4">
+        <TextField
+          className="me-2"
+          style={{ width: '50%' }}
+          label="Search by category"
+          variant="outlined"
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+        />
+        <FormControl variant="outlined" style={{ width: 'auto' }}>
+          <InputLabel>Date Filter</InputLabel>
+          <Select
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            label="Date Filter"
+          >
+            <MenuItem value="all">All Time</MenuItem>
+            <MenuItem value={new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>Last 7 Days</MenuItem>
+            <MenuItem value={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>Last 30 Days</MenuItem>
+            <MenuItem value={new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}>Last 90 Days</MenuItem>
+          </Select>
+        </FormControl>
       </div>
 
       <Typography variant="h6" gutterBottom>Total Accepted Waste by Category</Typography>
