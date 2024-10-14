@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import HomeResident from './HomeResident'
 import HeaderResident from '../../components/common/HeaderResident'
+import MyQRCodes from '../wasteCollection/resident/MyQRCodes'
 
 const ResidentUI = () => {
   return (
@@ -8,6 +9,7 @@ const ResidentUI = () => {
       <HeaderResident />
       <Routes>
           <Route path="/" element={<HomeResident />}></Route>
+          <Route path="/myQRCodes" element={<MyQRCodes />}></Route>
       </Routes>
     </>
   )

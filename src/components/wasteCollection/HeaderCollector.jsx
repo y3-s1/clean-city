@@ -7,12 +7,12 @@ const HeaderCollector = () => {
     <Navbar bg="light" expand="lg" className="shadow-sm">
       <Container>
         {/* Brand or Logo */}
-        <Navbar.Brand href="#home">My App</Navbar.Brand>
+        <Navbar href="#home" className='t-font-bold t-text-green-700 t-text-2xl'>Clean City</Navbar>
 
         {/* Right-aligned section with QR Code Icon */}
         <div className="d-flex order-lg-2">
           <Nav className="me-auto">
-            <NavLink to="/scan-qr" className="nav-link d-flex align-items-center t-mr-5">
+            <NavLink to="/collector/qrScanner" className="nav-link d-flex align-items-center t-mr-5">
               <FaQrcode size={24} /> {/* QR code icon */}
             </NavLink>
           </Nav>
