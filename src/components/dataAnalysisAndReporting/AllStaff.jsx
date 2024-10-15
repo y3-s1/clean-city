@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase/firebase'; // Firebase configuration
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore'; // Correct modular imports
+import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'; // Include updateDoc and deleteDoc
 
-import { Card, CardContent, Typography, CircularProgress, Grid, List, ListItem, Avatar, ListItemAvatar, ListItemText, Box } from '@mui/material';
+import { Card, CardContent, Typography, CircularProgress, Grid, List, ListItem, Avatar, ListItemAvatar, ListItemText, Box, Button, TextField } from '@mui/material';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
@@ -10,6 +10,8 @@ import EmailIcon from '@mui/icons-material/Email';
 function ViewStaff() {
   const [trucks, setTrucks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editTruck, setEditTruck] = useState(null); // Track which truck is being edited
+  const [updatedData, setUpdatedData] = useState({ registeredNumber: '', truckName: '' });
 
   // Fetch truck and collector details from Firebase
   useEffect(() => {
@@ -59,6 +61,29 @@ function ViewStaff() {
     fetchTruckDetails();
   }, []);
 
+  // Update truck data in Firebase
+  const handleUpdateTruck = async (truckId) => {
+    try {
+      const truckDocRef = doc(db, 'trucks', truckId);
+      await updateDoc(truckDocRef, updatedData); // Update the truck data
+      setEditTruck(null); // Exit edit mode after update
+      setUpdatedData({ registeredNumber: '', truckName: '' }); // Clear input fields
+    } catch (error) {
+      console.error('Error updating truck:', error);
+    }
+  };
+
+  // Delete truck from Firebase
+  const handleDeleteTruck = async (truckId) => {
+    try {
+      const truckDocRef = doc(db, 'trucks', truckId);
+      await deleteDoc(truckDocRef); // Delete the truck
+      setTrucks(trucks.filter(truck => truck.id !== truckId)); // Remove truck from local state
+    } catch (error) {
+      console.error('Error deleting truck:', error);
+    }
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -83,13 +108,45 @@ function ViewStaff() {
                     Truck ID: {truck.id}
                   </Typography>
                 </Box>
-                <Typography variant="body1" gutterBottom>
-                  <strong>Truck Model:</strong> {truck.registeredNumber}
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  <strong>Truck Capacity:</strong> {truck.truckName} tons
-                </Typography>
-                
+                {editTruck === truck.id ? (
+                  <Box>
+                    <TextField
+                      label="Truck Model"
+                      value={updatedData.registeredNumber}
+                      onChange={(e) => setUpdatedData({ ...updatedData, registeredNumber: e.target.value })}
+                      fullWidth
+                    />
+                    <TextField
+                      label="Truck Capacity (tons)"
+                      value={updatedData.truckName}
+                      onChange={(e) => setUpdatedData({ ...updatedData, truckName: e.target.value })}
+                      fullWidth
+                      style={{ marginTop: 10 }}
+                    />
+                    <Button variant="contained" color="primary" onClick={() => handleUpdateTruck(truck.id)}>
+                      Save Changes
+                    </Button>
+                    <Button variant="text" color="secondary" onClick={() => setEditTruck(null)}>
+                      Cancel
+                    </Button>
+                  </Box>
+                ) : (
+                  <>
+                    <Typography variant="body1" gutterBottom>
+                      <strong>Truck Model:</strong> {truck.registeredNumber}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      <strong>Truck Capacity:</strong> {truck.truckName} tons
+                    </Typography>
+                    <Button variant="outlined" color="primary" onClick={() => setEditTruck(truck.id)}>
+                      Edit
+                    </Button>
+                    <Button variant="contained" color="error" onClick={() => handleDeleteTruck(truck.id)} style={{ marginLeft: 10 }}>
+                      Delete
+                    </Button>
+                  </>
+                )}
+
                 <Typography variant="h6" component="div" mt={2}>
                   Assigned Collectors:
                 </Typography>

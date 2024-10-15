@@ -1,78 +1,99 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebase'; // Firebase config
-import { Container, Grid, Card, CardContent, Typography, Box } from '@mui/material'; // Material-UI components
+import { Container, Grid, Card, CardContent, Typography, Box, Button } from '@mui/material';
+import { Pie, Bar } from 'react-chartjs-2'; // Use react-chartjs-2 for rendering charts
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; // For table generation in jsPDF
+import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Register components
+ChartJS.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function AdminMonitoring() {
   const [totalWasteCollected, setTotalWasteCollected] = useState(0);
   const [wastePerHousehold, setWastePerHousehold] = useState(0);
   const [collectionEfficiency, setCollectionEfficiency] = useState(0);
+  const [recyclingPercentage, setRecyclingPercentage] = useState(0);
+  const [recentRequests, setRecentRequests] = useState([]);
 
   useEffect(() => {
     const fetchWasteData = async () => {
+      // Fetch completed waste data and compute totals
       const wasteCollectionRef = collection(db, 'WasteCollectionRequests');
       const completedQuery = query(wasteCollectionRef, where('status', '==', 'Completed'));
-
       const wasteSnapshot = await getDocs(completedQuery);
       let totalWaste = 0;
-      let wasteGeneratedSum = 0;
       let actualWasteCollectedSum = 0;
+      let recycledWasteSum = 0;
 
       for (const doc of wasteSnapshot.docs) {
         const wasteRequest = doc.data();
-        const binIDs = wasteRequest.binID;
-
-        for (const binID of binIDs) {
-          const binDocRef = collection(db, 'Bins');
-          const binDocs = await getDocs(query(binDocRef, where('residentID', '==', wasteRequest.residentID)));
-
-          binDocs.forEach((binDoc) => {
-            const binData = binDoc.data();
-            if (binData) {
-              totalWaste += binData.currentLevel;
-              wasteGeneratedSum += binData.currentLevel;
-              actualWasteCollectedSum += binData.currentLevel;
-            }
-          });
-        }
+        totalWaste += wasteRequest.totalWaste || 0;
+        actualWasteCollectedSum += wasteRequest.collectedWaste || 0;
+        recycledWasteSum += wasteRequest.recycledWaste || 0;
       }
 
       setTotalWasteCollected(totalWaste);
-      const efficiency = (actualWasteCollectedSum / wasteGeneratedSum) * 100;
-      setCollectionEfficiency(efficiency.toFixed(2));
+      setCollectionEfficiency(((actualWasteCollectedSum / totalWaste) * 100).toFixed(2));
+      setRecyclingPercentage(((recycledWasteSum / totalWaste) * 100).toFixed(2));
+    };
+
+    const fetchRecentRequests = async () => {
+      const wasteCollectionRef = collection(db, 'WasteCollectionRequests');
+      const wasteSnapshot = await getDocs(wasteCollectionRef);
+      const recentRequestsData = wasteSnapshot.docs.slice(0, 5).map(doc => doc.data());
+      setRecentRequests(recentRequestsData);
     };
 
     fetchWasteData();
+    fetchRecentRequests();
   }, []);
 
-  useEffect(() => {
-    const fetchWastePerHousehold = async () => {
-      const usersRef = collection(db, 'Users');
-      const userSnapshot = await getDocs(usersRef);
+  const pieData = {
+    labels: ['Recycled Waste', 'Non-Recycled Waste'],
+    datasets: [
+      {
+        data: [recyclingPercentage, 100 - recyclingPercentage],
+        backgroundColor: ['#36A2EB', '#FF6384'],
+      },
+    ],
+  };
 
-      let totalWasteGenerated = 0;
-      let householdCount = 0;
+  const barData = {
+    labels: ['Total Waste Collected', 'Waste per Household', 'Collection Efficiency'],
+    datasets: [
+      {
+        label: 'Waste Data',
+        data: [totalWasteCollected, wastePerHousehold, collectionEfficiency],
+        backgroundColor: ['#4BC0C0', '#FFCE56', '#E7E9ED'],
+      },
+    ],
+  };
 
-      for (const userDoc of userSnapshot.docs) {
-        const binDocRef = collection(db, 'Bins');
-        const binDocs = await getDocs(query(binDocRef, where('residentID', '==', userDoc.id)));
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text('Admin Monitoring Report', 14, 10);
+    doc.autoTable({
+      head: [['Total Waste Collected', 'Waste per Household', 'Collection Efficiency', 'Recycling Percentage']],
+      body: [[totalWasteCollected, wastePerHousehold, collectionEfficiency, recyclingPercentage]],
+    });
 
-        binDocs.forEach((binDoc) => {
-          const binData = binDoc.data();
-          if (binData.currentLevel) {
-            totalWasteGenerated += binData.currentLevel;
-          }
-        });
+    doc.text('Recent Requests:', 14, 60);
+    recentRequests.forEach((req, idx) => {
+      doc.text(`${idx + 1}. Request ID: ${req.requestId}, Status: ${req.status}`, 14, 70 + idx * 10);
+    });
 
-        householdCount++;
-      }
-
-      const averageWaste = totalWasteGenerated / householdCount;
-      setWastePerHousehold(averageWaste.toFixed(2));
-    };
-
-    fetchWastePerHousehold();
-  }, []);
+    doc.save('admin_report.pdf');
+  };
 
   return (
     <Container maxWidth="md">
@@ -82,41 +103,48 @@ function AdminMonitoring() {
         </Typography>
       </Box>
       <Grid container spacing={4}>
-        <Grid item xs={12} sm={4}>
+        {/* Bar Chart */}
+        <Grid item xs={12} sm={6}>
           <Card>
             <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
-                Total Waste Collected
+              <Typography variant="h5" gutterBottom>
+                Waste Data Overview
               </Typography>
-              <Typography variant="h6" color="textSecondary">
-                {totalWasteCollected} tons
-              </Typography>
+              <Bar data={barData} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        {/* Pie Chart */}
+        <Grid item xs={12} sm={6}>
           <Card>
             <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
-                Waste per Household
+              <Typography variant="h5" gutterBottom>
+                Recycling Distribution
               </Typography>
-              <Typography variant="h6" color="textSecondary">
-                {wastePerHousehold} tons
-              </Typography>
+              <Pie data={pieData} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        {/* Recent Requests */}
+        <Grid item xs={12}>
           <Card>
             <CardContent>
-              <Typography variant="h5" component="h2" gutterBottom>
-                Collection Efficiency
+              <Typography variant="h6" gutterBottom>
+                Recent Waste Collection Requests
               </Typography>
-              <Typography variant="h6" color="textSecondary">
-                {collectionEfficiency}%
-              </Typography>
+              {recentRequests.map((req, index) => (
+                <Typography key={index}>
+                  {index + 1}. Request ID: {req.requestId}, Status: {req.status}
+                </Typography>
+              ))}
             </CardContent>
           </Card>
+        </Grid>
+        {/* Generate PDF Button */}
+        <Grid item xs={12}>
+          <Button variant="contained" color="primary" onClick={generatePDF}>
+            Download Report
+          </Button>
         </Grid>
       </Grid>
     </Container>

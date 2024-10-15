@@ -6,6 +6,7 @@ import AdminMenu from '../../components/dataAnalysisAndReporting/AdminMenu'
 import '../../css/admin.css'
 import ViewStaff from '../dataAnalysisAndReporting/admin/ViewStaff'
 import ScheduleWasteCollection from '../dataAnalysisAndReporting/admin/ScheduleWasteCollection'
+import AllScheduledRoutes from '../dataAnalysisAndReporting/admin/AllScheduledRoutes'
 
 const AdminUI = () => {
   return (
@@ -17,6 +18,7 @@ const AdminUI = () => {
         <Route path="/addStaff" element={<AddStaff />}></Route>
         <Route path="/viewStaff" element={<ViewStaff />}></Route>
         <Route path="/scheduleCollecting" element={<ScheduleWasteCollection />}></Route>
+        <Route path="/allRoutes" element={<AllScheduledRoutes />}></Route>
     </Routes>
     </div>
     </>

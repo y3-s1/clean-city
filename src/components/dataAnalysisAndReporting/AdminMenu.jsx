@@ -86,20 +86,20 @@ function AdminMenu() {
             </li>
             <li className="nav-item">
               <NavLink
-                to="/admin/customerRelationship/admin/reviews"
-                className="nav-link crm-sidebar-link"
-                activeClassName="active"
-              >
-                Reviews
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
                 to="/admin/scheduleCollecting"
                 className="nav-link crm-sidebar-link"
                 activeClassName="active"
               >
                 Schedule Waste Collection
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                to="/admin/allRoutes"
+                className="nav-link crm-sidebar-link"
+                activeClassName="active"
+              >
+                Scheduled Routes
               </NavLink>
             </li>
           </ul>
