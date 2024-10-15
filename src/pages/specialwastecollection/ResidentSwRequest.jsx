@@ -30,6 +30,14 @@ const ResidentSwRequest = () => {
   const [name, setName] = useState('');
   const [openTerms, setOpenTerms] = useState(false);
 
+  // New state variables for card details
+  const [openCardDetails, setOpenCardDetails] = useState(false);
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardName, setCardName] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [cardErrors, setCardErrors] = useState({});
+
   const userId = '8oO1oaRzfEWFaHJaOCUk';
 
   useEffect(() => {
@@ -87,6 +95,11 @@ const ResidentSwRequest = () => {
       return;
     }
 
+    if (paymentMethod === 'credit_card' && !validateCardDetails()) {
+      alert('Please enter valid card details.');
+      return;
+    }
+
     const swCollectionRef = collection(db, 'Users', userId, 'SpecialWasteRequests');
 
     try {
@@ -116,6 +129,38 @@ const ResidentSwRequest = () => {
 
   const handleCloseTerms = () => {
     setOpenTerms(false);
+  };
+
+  // New functions for card details
+  const handleOpenCardDetails = () => {
+    setOpenCardDetails(true);
+  };
+
+  const handleCloseCardDetails = () => {
+    setOpenCardDetails(false);
+  };
+
+  const validateCardDetails = () => {
+    const errors = {};
+
+    if (!/^\d{16}$/.test(cardNumber)) {
+      errors.cardNumber = 'Card number must be 16 digits';
+    }
+
+    if (cardName.trim().length === 0) {
+      errors.cardName = 'Card name is required';
+    }
+
+    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+      errors.expiryDate = 'Expiry date must be in MM/YY format';
+    }
+
+    if (!/^\d{3}$/.test(cvv)) {
+      errors.cvv = 'CVV must be 3 digits';
+    }
+
+    setCardErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   return (
@@ -250,6 +295,18 @@ const ResidentSwRequest = () => {
               </FormControl>
             </div>
 
+            {paymentMethod === 'credit_card' && (
+              <Button
+                variant="outlined"
+                color="primary"
+                fullWidth
+                onClick={handleOpenCardDetails}
+                className="mb-3"
+              >
+                Enter Card Details
+              </Button>
+            )}
+
             <div className="mb-3">
               <FormControlLabel
                 control={
@@ -285,6 +342,7 @@ const ResidentSwRequest = () => {
         </div>
       </div>
 
+      {/* Terms and Conditions Dialog */}
       <Dialog open={openTerms} onClose={handleCloseTerms}>
         <DialogTitle>Terms and Conditions</DialogTitle>
         <DialogContent>
@@ -308,6 +366,57 @@ const ResidentSwRequest = () => {
         <DialogActions>
           <Button onClick={handleCloseTerms} color="primary">
             Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* New Card Details Dialog */}
+      <Dialog open={openCardDetails} onClose={handleCloseCardDetails}>
+        <DialogTitle>Enter Card Details</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Card Number"
+            fullWidth
+            margin="normal"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
+            error={!!cardErrors.cardNumber}
+            helperText={cardErrors.cardNumber}
+          />
+          <TextField
+            label="Name on Card"
+            fullWidth
+            margin="normal"
+            value={cardName}
+            onChange={(e) => setCardName(e.target.value)}
+            error={!!cardErrors.cardName}
+            helperText={cardErrors.cardName}
+          />
+          <TextField
+            label="Expiry Date (MM/YY)"
+            fullWidth
+            margin="normal"
+            value={expiryDate}
+            onChange={(e) => setExpiryDate(e.target.value)}
+            error={!!cardErrors.expiryDate}
+            helperText={cardErrors.expiryDate}
+          />
+          <TextField
+            label="CVV"
+            fullWidth
+            margin="normal"
+            value={cvv}
+            onChange={(e) => setCvv(e.target.value)}
+            error={!!cardErrors.cvv}
+            helperText={cardErrors.cvv}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseCardDetails} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => { if (validateCardDetails()) handleCloseCardDetails(); }} color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>
