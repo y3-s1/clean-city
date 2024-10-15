@@ -3,7 +3,7 @@ import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../firebase/firebase';
 import { FaTrash } from "react-icons/fa6";
 import QRCode from 'react-qr-code';
-import Modal from 'react-modal'; // Ensure 'react-modal' is installed
+import Modal from 'react-modal';
 
 const MyQRCodes = () => {
   const userDocumentID = '8oO1oaRzfEWFaHJaOCUk';
@@ -11,7 +11,7 @@ const MyQRCodes = () => {
   const [myBins, setMyBins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedQR, setSelectedQR] = useState(null); // For the modal
+  const [selectedQR, setSelectedQR] = useState(null);
 
   const fetchUserBins = async () => {
     try {
@@ -69,6 +69,20 @@ const MyQRCodes = () => {
     setSelectedQR(null);
   };
 
+  const handleDownload = () => {
+    if (selectedQR) {
+      const qrCodeCanvas = document.querySelector('.modal-qrcode canvas');
+  
+      if (qrCodeCanvas) {
+        const link = document.createElement('a');
+        link.href = qrCodeCanvas.toDataURL('image/png');
+        link.download = `${selectedQR}.png`;
+        link.click();
+      }
+    }
+  };
+  
+
   return (
     <div className="t-container t-mx-auto t-p-4">
       <h2 className="t-text-2xl t-font-bold t-mb-4">My Bins</h2>
@@ -119,27 +133,30 @@ const MyQRCodes = () => {
         <div className="t-flex t-flex-col t-items-center">
           <h2 className="t-text-2xl t-font-bold t-mb-4">Bin QR Code</h2>
           {selectedQR && (
-            <QRCode
-              value={selectedQR}
-              size={256}
-            />
+            <div className="modal-qrcode">
+              <QRCode
+                value={selectedQR}
+                size={256}
+              />
+            </div>
           )}
           <div className='t-flex t-gap-10'>
-          <button
-            className="t-mt-6 t-bg-green-600 t-text-white t-px-4 t-py-2 t-rounded-lg t-hover:bg-blue-600"
-            onClick={closeModal}
-          >
-            Download
-          </button>
-          <button
-            className="t-mt-6 t-bg-blue-500 t-px-8 t-text-white t-px-4 t-py-2 t-rounded-lg t-hover:bg-blue-600"
-            onClick={closeModal}
-          >
-            Close
-          </button>
+            <button
+              className="t-mt-6 t-bg-green-600 t-text-white t-px-4 t-py-2 t-rounded-lg t-hover:bg-blue-600"
+              onClick={handleDownload}
+            >
+              Download
+            </button>
+            <button
+              className="t-mt-6 t-bg-blue-500 t-px-8 t-text-white t-px-4 t-py-2 t-rounded-lg t-hover:bg-blue-600"
+              onClick={closeModal}
+            >
+              Close
+            </button>
           </div>
         </div>
       </Modal>
+
     </div>
   );
 };
