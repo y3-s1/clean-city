@@ -1,13 +1,14 @@
 import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { FaQrcode } from 'react-icons/fa'; // Importing Font Awesome icon for QR code
+import { NavLink } from 'react-router-dom';
 
 const HeaderResident = () => {
   return (
     <Navbar bg="light" expand="lg" className="shadow-sm">
       <Container>
         {/* Brand or Logo */}
-        <Navbar.Brand href="#home">My App</Navbar.Brand>
+        <Navbar href="#home" className='t-font-bold t-text-green-700 t-text-2xl'>Clean City</Navbar>
         
         {/* Toggle button for mobile view */}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -22,9 +23,9 @@ const HeaderResident = () => {
 
           {/* QR Code Icon */}
           <Nav>
-            <Nav.Link href="#scan-qr">
+            <NavLink to="/resident/myQRCodes" className="nav-link d-flex align-items-center">
               <FaQrcode size={24} /> {/* QR code icon */}
-            </Nav.Link>
+            </NavLink>
           </Nav>
         </Navbar.Collapse>
       </Container>
