@@ -6,7 +6,7 @@ import { db } from '../../firebase/firebase';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Material UI imports
-import { TextField, Button, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { TextField, Button, Checkbox, FormControlLabel, MenuItem, Select, InputLabel, FormControl, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 const wasteCategories = [
   { id: 1, name: "Household Waste", baseCharge: 100 },
@@ -28,6 +28,7 @@ const ResidentSwRequest = () => {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [name, setName] = useState('');
+  const [openTerms, setOpenTerms] = useState(false);
 
   const userId = '8oO1oaRzfEWFaHJaOCUk';
 
@@ -109,10 +110,18 @@ const ResidentSwRequest = () => {
     }
   };
 
+  const handleOpenTerms = () => {
+    setOpenTerms(true);
+  };
+
+  const handleCloseTerms = () => {
+    setOpenTerms(false);
+  };
+
   return (
     <div className="container mt-3">
       <div className="row justify-content-center">
-        <div className="col-md-6">  {/* Controls the form width */}
+        <div className="col-md-6">
           <h2 className="text-center display-6 mb-4">Special Waste Collection Request</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -250,7 +259,17 @@ const ResidentSwRequest = () => {
                     required
                   />
                 }
-                label="I agree to the terms and conditions"
+                label={
+                  <span>
+                    I agree to the{' '}
+                    <span
+                      style={{ textDecoration: 'underline', cursor: 'pointer', color: 'blue' }}
+                      onClick={handleOpenTerms}
+                    >
+                      terms and conditions
+                    </span>
+                  </span>
+                }
               />
             </div>
 
@@ -265,6 +284,33 @@ const ResidentSwRequest = () => {
           </form>
         </div>
       </div>
+
+      <Dialog open={openTerms} onClose={handleCloseTerms}>
+        <DialogTitle>Terms and Conditions</DialogTitle>
+        <DialogContent>
+          <p>
+            1. The user agrees to provide accurate information about the waste to be collected.
+          </p>
+          <p>
+            2. The user must ensure that the waste is properly segregated according to the selected categories.
+          </p>
+          <p>
+            3. The user agrees to pay the total service charge as calculated based on the selected waste categories and amounts.
+          </p>
+          <p>
+            4. The collection service reserves the right to refuse collection if the waste does not match the description provided in the request.
+          </p>
+          <p>
+            5. The user must be present at the specified location during the selected pickup time.
+          </p>
+          {/* Add more terms as needed */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTerms} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
