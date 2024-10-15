@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 const ConfirmationPage = () => {
   const { decodedText } = useParams();
@@ -13,9 +13,10 @@ const ConfirmationPage = () => {
         // Reference to the specific bin document in the "Bins" collection
         const binRef = doc(db, 'Bins', decodedText);
 
-        // Update the "currentLevel" attribute to 0
+        // Update the "currentLevel" attribute to 0 and set "updatedAt" to the current server timestamp
         await updateDoc(binRef, {
           currentLevel: 0,
+          updatedAt: serverTimestamp(),
         });
 
         console.log(`Bin ${decodedText} updated successfully.`);

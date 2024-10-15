@@ -195,7 +195,7 @@ const TodaySchedule = () => {
       <div className="t-bg-gray-100 t-p-4 t-rounded-lg t-shadow-md t-mb-6">
         <div className="t-flex t-justify-between t-items-center">
           <div>
-            <span className='t-font-semibold'>{fetchedSchedule[0]?.route}</span>
+            {/* <span className='t-font-semibold'>{fetchedSchedule[0]?.route}</span> */}
             <p>Total Destinations: {totalDestinations}</p>
           </div>
           <div className="t-flex t-flex-col t-items-end t-mb-1 t-mt-auto">
@@ -225,7 +225,7 @@ const TodaySchedule = () => {
         <div className="t-destination-cards">
           <div className="t-bg-white t-p-4 t-rounded-lg t-shadow-md t-mb-4">
             <h2 className="t-text-xl t-font-semibold">Destination {currentDestinationIndex + 1}</h2>
-            <p>Route: {fetchedSchedule[0].route}</p>
+            {/* <p>Route: {fetchedSchedule[0].route}</p> */}
             <div className="t-bins-list t-mt-4">
               <h3 className="t-font-semibold">Requests</h3>
               {fetchedRequests.map((request, index) => (
