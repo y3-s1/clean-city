@@ -22,12 +22,27 @@ const TodaySchedule = () => {
     console.log("Updated fetchedRequests: ", fetchedRequests);
   }, [fetchedRequests]);
 
+  const handleCompleteRequest = async (requestId) => {
+    const requestDocRef = doc(db, 'WasteCollectionRequests', requestId);
+  
+    try {
+      await updateDoc(requestDocRef, { status: 'Completed' });
+      console.log(`Request ${requestId} marked as "Completed"`);
+      
+      // Refetch the updated data to reflect the changes in the UI
+      await fetchTodaySchedules();
+    } catch (error) {
+      console.error('Error updating request status:', error);
+    }
+  };
+  
+
   const handleStart = async () => {
     if (fetchedSchedule.length > 0) {
       const scheduleId = fetchedSchedule[0].id; // Get the first schedule's ID
       
       // Reference the document in Firestore
-      const scheduleDocRef = doc(db, 'ScheduledCollections', scheduleId);
+      const scheduleDocRef = doc(db, 'Schedules', scheduleId);
 
       try {
         // Update the document's status field
@@ -144,7 +159,7 @@ const TodaySchedule = () => {
 
   const fetchTodaySchedules = async () => {
     try {
-      const scheduledCollectionRef = collection(db, 'ScheduledCollections');
+      const scheduledCollectionRef = collection(db, 'Schedules');
       const q = query(scheduledCollectionRef, where('truckId', '==', assignedTruckId));
 
       const querySnapshot = await getDocs(q);
@@ -229,9 +244,10 @@ const TodaySchedule = () => {
             <div className="t-bins-list t-mt-4">
               <h3 className="t-font-semibold">Requests</h3>
               {fetchedRequests.map((request, index) => (
-                <div key={index} className="t-py-1 t-bg-gray-100">
+                <div key={index} className="t-py-2 t-bg-gray-200 t-my-10">
                   {request.id}
                   {/* Display bin details */}
+                  <div>{request.status}</div>
                   <div className="t-bins-list t-mt-4">
                     <h3 className="t-font-semibold">Bins:</h3>
                     {request.bins.map((bin) => (
@@ -256,21 +272,32 @@ const TodaySchedule = () => {
                       </div>
                     ))}
                   </div>
-                  <div className="t-mt-4">
+                  {/* Navigate and Complete buttons */}
+                  <div className="t-mt-4 t-flex t-justify-between">
                     <button
                       className="t-px-4 t-py-2 t-bg-green-500 t-text-white t-rounded-lg t-hover:bg-green-600"
                       onClick={() => {
-                        const location = request.bins[0].location; // Assuming this is your GeoPoint
-                        const lat = location._lat; // Accessing the latitude
-                        const long = location._long; // Accessing the longitude
+                        const location = request.bins[0].location;
+                        const lat = location._lat;
+                        const long = location._long;
                         console.log('Navigating to', location);
-
-                        // Open Google Maps with the specified latitude and longitude
                         window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${long}`, '_blank');
                       }}
                     >
                       Navigate
                     </button>
+                    <button
+                      className={`t-px-4 t-py-2 t-text-white t-rounded-lg ${
+                        request.status === 'Completed'
+                          ? 't-bg-gray-500 cursor-not-allowed'
+                          : 't-bg-blue-500 t-hover:bg-blue-600'
+                      }`}
+                      onClick={() => handleCompleteRequest(request.id)}
+                      disabled={request.status === 'Completed'}
+                    >
+                      Complete
+                    </button>
+
                   </div>
                 </div>
               ))}
@@ -278,26 +305,7 @@ const TodaySchedule = () => {
             
           </div>
 
-          <div className="t-flex t-justify-between t-mt-4">
-            <button
-              onClick={handlePreviousDestination}
-              disabled={currentDestinationIndex === 0}
-              className={`t-px-4 t-py-2 t-rounded-lg ${
-                currentDestinationIndex === 0 ? 't-bg-gray-300' : 't-bg-blue-500 t-text-white t-hover:bg-blue-600'
-              }`}
-            >
-              Previous Destination
-            </button>
-            <button
-              onClick={handleNextDestination}
-              disabled={currentDestinationIndex === fetchedRequests.length - 1}
-              className={`t-px-4 t-py-2 t-rounded-lg ${
-                currentDestinationIndex === fetchedRequests.length - 1 ? 't-bg-gray-300' : 't-bg-blue-500 t-text-white t-hover:bg-blue-600'
-              }`}
-            >
-              Next Destination
-            </button>
-          </div>
+          
         </div>
       )}
 

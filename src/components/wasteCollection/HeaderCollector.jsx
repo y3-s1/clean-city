@@ -7,7 +7,7 @@ const HeaderCollector = () => {
     <Navbar bg="light" expand="lg" className="shadow-sm">
       <Container>
         {/* Brand or Logo */}
-        <Navbar href="#home" className='t-font-bold t-text-green-700 t-text-2xl'>Clean City</Navbar>
+        <Navbar href="/collector" className='t-font-bold t-text-green-700 t-text-2xl'>Clean City</Navbar>
 
         {/* Right-aligned section with QR Code Icon */}
         <div className="d-flex order-lg-2">
@@ -24,7 +24,7 @@ const HeaderCollector = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <NavLink 
-              to="/" 
+              to="/collector" 
               className="nav-link" 
               exact // Add exact to match the exact route
               activeClassName="active"
