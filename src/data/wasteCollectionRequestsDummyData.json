@@ -1,0 +1,47 @@
+{
+    "WasteCollectionRequests": [
+      {
+        "requestId": "req001",
+        "status": "Completed",
+        "totalWaste": 150,
+        "collectedWaste": 140,
+        "recycledWaste": 70
+      },
+      {
+        "requestId": "req002",
+        "status": "Completed",
+        "totalWaste": 200,
+        "collectedWaste": 190,
+        "recycledWaste": 100
+      },
+      {
+        "requestId": "req003",
+        "status": "Completed",
+        "totalWaste": 100,
+        "collectedWaste": 90,
+        "recycledWaste": 50
+      },
+      {
+        "requestId": "req004",
+        "status": "Pending",
+        "totalWaste": 0,
+        "collectedWaste": 0,
+        "recycledWaste": 0
+      },
+      {
+        "requestId": "req005",
+        "status": "Completed",
+        "totalWaste": 300,
+        "collectedWaste": 290,
+        "recycledWaste": 150
+      },
+      {
+        "requestId": "req006",
+        "status": "Completed",
+        "totalWaste": 250,
+        "collectedWaste": 240,
+        "recycledWaste": 120
+      }
+    ]
+  }
+  

@@ -1,23 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../../firebase/firebase'; // Firebase configuration
-import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'; // Include updateDoc and deleteDoc
+import React, { useEffect, useState } from "react";
+import { db } from "../../firebase/firebase"; // Firebase configuration
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore"; // Include updateDoc and deleteDoc
 
-import { Card, CardContent, Typography, CircularProgress, Grid, List, ListItem, Avatar, ListItemAvatar, ListItemText, Box, Button, TextField } from '@mui/material';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import PersonIcon from '@mui/icons-material/Person';
-import EmailIcon from '@mui/icons-material/Email';
+import {
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+  Grid,
+  List,
+  ListItem,
+  Avatar,
+  ListItemAvatar,
+  ListItemText,
+  Box,
+  Button,
+  TextField,
+} from "@mui/material";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import PersonIcon from "@mui/icons-material/Person";
+import EmailIcon from "@mui/icons-material/Email";
 
 function ViewStaff() {
   const [trucks, setTrucks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editTruck, setEditTruck] = useState(null); // Track which truck is being edited
-  const [updatedData, setUpdatedData] = useState({ registeredNumber: '', truckName: '' });
+  const [updatedData, setUpdatedData] = useState({
+    registeredNumber: "",
+    truckName: "",
+  });
 
   // Fetch truck and collector details from Firebase
   useEffect(() => {
     const fetchTruckDetails = async () => {
       try {
-        const truckCollectionRef = collection(db, 'trucks'); // Correct syntax for collection reference
+        const truckCollectionRef = collection(db, "trucks"); // Correct syntax for collection reference
         const truckSnapshot = await getDocs(truckCollectionRef);
         const truckData = [];
 
@@ -29,7 +53,7 @@ function ViewStaff() {
           // Fetch associated collectors based on collectorId array
           const collectorPromises = truck.collectorId.map(async (id) => {
             try {
-              const collectorDocRef = doc(db, 'collector', id); // Correct syntax for doc reference
+              const collectorDocRef = doc(db, "collector", id); // Correct syntax for doc reference
               const collectorDoc = await getDoc(collectorDocRef);
               const collector = collectorDoc.data();
               if (collectorDoc.exists()) {
@@ -46,13 +70,15 @@ function ViewStaff() {
 
           // Wait for all collectors to be fetched
           const collectors = await Promise.all(collectorPromises);
-          truck.collectors = collectors.filter((collector) => collector !== null); // Filter out null collectors
+          truck.collectors = collectors.filter(
+            (collector) => collector !== null
+          ); // Filter out null collectors
           truckData.push(truck); // Add truck with collector details to truckData
         }
 
         setTrucks(truckData); // Update state with fetched data
       } catch (error) {
-        console.error('Error fetching truck and collector data:', error);
+        console.error("Error fetching truck and collector data:", error);
       } finally {
         setLoading(false); // Set loading to false when data is fetched
       }
@@ -64,29 +90,34 @@ function ViewStaff() {
   // Update truck data in Firebase
   const handleUpdateTruck = async (truckId) => {
     try {
-      const truckDocRef = doc(db, 'trucks', truckId);
+      const truckDocRef = doc(db, "trucks", truckId);
       await updateDoc(truckDocRef, updatedData); // Update the truck data
       setEditTruck(null); // Exit edit mode after update
-      setUpdatedData({ registeredNumber: '', truckName: '' }); // Clear input fields
+      setUpdatedData({ registeredNumber: "", truckName: "" }); // Clear input fields
     } catch (error) {
-      console.error('Error updating truck:', error);
+      console.error("Error updating truck:", error);
     }
   };
 
   // Delete truck from Firebase
   const handleDeleteTruck = async (truckId) => {
     try {
-      const truckDocRef = doc(db, 'trucks', truckId);
+      const truckDocRef = doc(db, "trucks", truckId);
       await deleteDoc(truckDocRef); // Delete the truck
-      setTrucks(trucks.filter(truck => truck.id !== truckId)); // Remove truck from local state
+      setTrucks(trucks.filter((truck) => truck.id !== truckId)); // Remove truck from local state
     } catch (error) {
-      console.error('Error deleting truck:', error);
+      console.error("Error deleting truck:", error);
     }
   };
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -113,20 +144,38 @@ function ViewStaff() {
                     <TextField
                       label="Truck Model"
                       value={updatedData.registeredNumber}
-                      onChange={(e) => setUpdatedData({ ...updatedData, registeredNumber: e.target.value })}
+                      onChange={(e) =>
+                        setUpdatedData({
+                          ...updatedData,
+                          registeredNumber: e.target.value,
+                        })
+                      }
                       fullWidth
                     />
                     <TextField
                       label="Truck Capacity (tons)"
                       value={updatedData.truckName}
-                      onChange={(e) => setUpdatedData({ ...updatedData, truckName: e.target.value })}
+                      onChange={(e) =>
+                        setUpdatedData({
+                          ...updatedData,
+                          truckName: e.target.value,
+                        })
+                      }
                       fullWidth
                       style={{ marginTop: 10 }}
                     />
-                    <Button variant="contained" color="primary" onClick={() => handleUpdateTruck(truck.id)}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleUpdateTruck(truck.id)}
+                    >
                       Save Changes
                     </Button>
-                    <Button variant="text" color="secondary" onClick={() => setEditTruck(null)}>
+                    <Button
+                      variant="text"
+                      color="secondary"
+                      onClick={() => setEditTruck(null)}
+                    >
                       Cancel
                     </Button>
                   </Box>
@@ -138,10 +187,19 @@ function ViewStaff() {
                     <Typography variant="body1" gutterBottom>
                       <strong>Truck Capacity:</strong> {truck.truckName} tons
                     </Typography>
-                    <Button variant="outlined" color="primary" onClick={() => setEditTruck(truck.id)}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => setEditTruck(truck.id)}
+                    >
                       Edit
                     </Button>
-                    <Button variant="contained" color="error" onClick={() => handleDeleteTruck(truck.id)} style={{ marginLeft: 10 }}>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteTruck(truck.id)}
+                      style={{ marginLeft: 10 }}
+                    >
                       Delete
                     </Button>
                   </>
@@ -160,13 +218,22 @@ function ViewStaff() {
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                          primary={<strong>Name:</strong> + collector.collectorName}
-                          secondary={<span><EmailIcon fontSize="small" /> {collector.collectorEmail}</span>}
+                          primary={
+                            <strong>Name:</strong> + collector.collectorName
+                          }
+                          secondary={
+                            <span>
+                              <EmailIcon fontSize="small" />{" "}
+                              {collector.collectorEmail}
+                            </span>
+                          }
                         />
                       </ListItem>
                     ))
                   ) : (
-                    <Typography variant="body2">No collector data available</Typography>
+                    <Typography variant="body2">
+                      No collector data available
+                    </Typography>
                   )}
                 </List>
               </CardContent>

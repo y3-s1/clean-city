@@ -1,13 +1,13 @@
-import React from 'react'
-import CreateManualSchedule from '../../../components/dataAnalysisAndReporting/CreateManualSchedule'
+import React from "react";
+import CreateManualSchedule from "../../../components/dataAnalysisAndReporting/CreateManualSchedule";
 
 function ScheduleWasteCollection() {
   return (
     <>
-    {/* <ScheduleForm/> */}
-    <CreateManualSchedule/>
+      {/* <ScheduleForm/> */}
+      <CreateManualSchedule />
     </>
-  )
+  );
 }
 
-export default ScheduleWasteCollection
+export default ScheduleWasteCollection;

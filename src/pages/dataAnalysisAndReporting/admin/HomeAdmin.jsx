@@ -1,13 +1,13 @@
-import React from 'react'
-import AdminMonitoring from '../../../components/dataAnalysisAndReporting/AdminMonitoring'
+import React from "react";
+import AdminMonitoring from "../../../components/dataAnalysisAndReporting/AdminMonitoring";
 
 function HomeAdmin() {
   return (
     <>
-    <AdminMonitoring/>
-    {/* <WasteCollectionScheduler/> */}
+      <AdminMonitoring />
+      {/* <WasteCollectionScheduler/> */}
     </>
-  )
+  );
 }
 
-export default HomeAdmin
+export default HomeAdmin;

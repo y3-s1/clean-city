@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/firebase';
-import { TextField, Button, Autocomplete, Paper, Typography } from '@mui/material';
-import { Box } from '@mui/system';
-import '../../css/admin.css';
+import React, { useState, useEffect } from "react";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+import {
+  TextField,
+  Button,
+  Autocomplete,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { Box } from "@mui/system";
+import "../../css/admin.css";
 
 function AddTruck() {
-  const [truckName, setTruckName] = useState('');
-  const [registeredNumber, setRegisteredNumber] = useState('');
+  const [truckName, setTruckName] = useState("");
+  const [registeredNumber, setRegisteredNumber] = useState("");
   const [collectorId, setCollectorId] = useState([]); // Stores selected collector IDs
-  const [collectors, setCollectors] = useState([]);   // Stores list of collectors from Firestore
+  const [collectors, setCollectors] = useState([]); // Stores list of collectors from Firestore
 
   // Fetch collectors from Firestore when the component mounts
   useEffect(() => {
     const fetchCollectors = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'collector'));
+        const querySnapshot = await getDocs(collection(db, "collector"));
         const collectorsData = querySnapshot.docs.map((doc) => ({
           id: doc.id, // collectorId
           name: doc.data().collectorName, // collectorName
         }));
         setCollectors(collectorsData);
       } catch (error) {
-        console.error('Error fetching collectors: ', error);
+        console.error("Error fetching collectors: ", error);
       }
     };
 
@@ -34,30 +40,30 @@ function AddTruck() {
     e.preventDefault();
 
     try {
-      await addDoc(collection(db, 'trucks'), {
+      await addDoc(collection(db, "trucks"), {
         truckName,
         registeredNumber,
         collectorId, // Send selected collector IDs to Firestore
       });
 
       // Reset form fields
-      setTruckName('');
-      setRegisteredNumber('');
+      setTruckName("");
+      setRegisteredNumber("");
       setCollectorId([]);
-      alert('Truck added successfully!');
+      alert("Truck added successfully!");
     } catch (error) {
-      console.error('Error adding truck: ', error);
+      console.error("Error adding truck: ", error);
     }
   };
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f4f6f9',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f4f6f9",
       }}
     >
       <Paper
@@ -66,7 +72,7 @@ function AddTruck() {
           padding: 4,
           maxWidth: 600,
           borderRadius: 3,
-          backgroundColor: '#ffffff',
+          backgroundColor: "#ffffff",
         }}
       >
         <Typography
@@ -76,8 +82,8 @@ function AddTruck() {
           gutterBottom
           sx={{
             fontWeight: 600,
-            color: '#37474f',
-            textTransform: 'uppercase',
+            color: "#37474f",
+            textTransform: "uppercase",
           }}
         >
           Add New Truck
@@ -94,14 +100,14 @@ function AddTruck() {
               required
               sx={{
                 marginBottom: 2,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px',
-                  backgroundColor: '#f9f9f9',
-                  '& fieldset': {
-                    borderColor: '#bdbdbd',
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  backgroundColor: "#f9f9f9",
+                  "& fieldset": {
+                    borderColor: "#bdbdbd",
                   },
-                  '&:hover fieldset': {
-                    borderColor: '#37474f',
+                  "&:hover fieldset": {
+                    borderColor: "#37474f",
                   },
                 },
               }}
@@ -115,14 +121,14 @@ function AddTruck() {
               required
               sx={{
                 marginBottom: 2,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px',
-                  backgroundColor: '#f9f9f9',
-                  '& fieldset': {
-                    borderColor: '#bdbdbd',
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  backgroundColor: "#f9f9f9",
+                  "& fieldset": {
+                    borderColor: "#bdbdbd",
                   },
-                  '&:hover fieldset': {
-                    borderColor: '#37474f',
+                  "&:hover fieldset": {
+                    borderColor: "#37474f",
                   },
                 },
               }}
@@ -141,13 +147,13 @@ function AddTruck() {
                   label="Select Collectors"
                   placeholder="Search Collectors"
                   sx={{
-                    backgroundColor: '#f9f9f9',
-                    borderRadius: '12px',
-                    '& fieldset': {
-                      borderColor: '#bdbdbd',
+                    backgroundColor: "#f9f9f9",
+                    borderRadius: "12px",
+                    "& fieldset": {
+                      borderColor: "#bdbdbd",
                     },
-                    '&:hover fieldset': {
-                      borderColor: '#37474f',
+                    "&:hover fieldset": {
+                      borderColor: "#37474f",
                     },
                   }}
                 />
@@ -166,13 +172,13 @@ function AddTruck() {
             fullWidth
             sx={{
               padding: 2,
-              borderRadius: '12px',
-              fontSize: '16px',
-              backgroundColor: '#00796b',
-              '&:hover': {
-                backgroundColor: '#004d40',
+              borderRadius: "12px",
+              fontSize: "16px",
+              backgroundColor: "#00796b",
+              "&:hover": {
+                backgroundColor: "#004d40",
               },
-              transition: 'background-color 0.3s ease',
+              transition: "background-color 0.3s ease",
             }}
           >
             Add Truck
