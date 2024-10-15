@@ -1,0 +1,126 @@
+/* Wrapper for top navbar and sidebar */
+.crm-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Top navbar spans the entire width */
+  .crm-top-navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    height: 56px;
+    box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.1); /* Bottom shadow */
+  }
+  
+  /* Sidebar styling */
+  .crm-sidebar {
+    width: 240px;
+    position: fixed;
+    top: 56px; /* Align below the top navbar */
+    bottom: 0;
+    left: 0;
+    background-color: #f8f9fa;
+    padding-top: 10px;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+  }
+  
+  /* Hide sidebar by default on smaller screens (below 768px) */
+  @media (max-width: 767px) {
+    .crm-sidebar {
+      left: -240px; /* Sidebar hidden off-screen */
+    }
+  
+    .crm-sidebar.active {
+      left: 0; /* Sidebar slides in when active */
+    }
+  
+    /* When sidebar is active, move the content */
+    .show-sidebar .crm-content {
+      margin-left: 240px;
+    }
+  }
+  
+  /* Main content area shifts right to accommodate sidebar on desktop */
+  .crm-content {
+    padding: 20px;
+    flex-grow: 1;
+    transition: margin-left 0.3s ease;
+  }
+  
+  /* Sidebar link styling */
+  .crm-sidebar-link {
+    padding: 10px 20px;
+    display: block;
+    color: #000;
+  }
+  
+  .crm-sidebar-link.active {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  /* Sidebar and content for desktop (larger than 768px) */
+  @media (min-width: 768px) {
+    .crm-sidebar {
+      left: 0; /* Sidebar always visible on larger screens */
+    }
+  
+    .crm-content {
+      margin-left: 240px; /* Ensure content is adjusted for sidebar */
+    }
+  }
+
+
+  /*Add truck*/
+
+  .add-truck-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .add-truck-form h2 {
+    text-align: center;
+  }
+  
+  .add-truck-form form div {
+    margin-bottom: 15px;
+  }
+  
+  .add-truck-form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .add-truck-form input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  
+  .add-truck-form button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-truck-form button[type="button"] {
+    margin-left: 10px;
+    background-color: #6c757d;
+  }
+  
+
+  /* schedule form */
+
+  
