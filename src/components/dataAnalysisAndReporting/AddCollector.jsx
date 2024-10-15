@@ -1,18 +1,18 @@
-import { addDoc, collection } from 'firebase/firestore';
-import React, { useState } from 'react';
-import { db } from '../../firebase/firebase';
-import { Box, Paper, TextField, Typography } from '@mui/material';
-import Button from '@mui/material/Button'; // Using Material-UI button for consistency
+import { addDoc, collection } from "firebase/firestore";
+import React, { useState } from "react";
+import { db } from "../../firebase/firebase";
+import { Box, Paper, TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button"; // Using Material-UI button for consistency
 
 function AddCollector() {
-  const [collectorName, setCollectorName] = useState('');
-  const [collectorEmail, setCollectorEmail] = useState('');
+  const [collectorName, setCollectorName] = useState("");
+  const [collectorEmail, setCollectorEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Reference to 'collector' collection
-    const collectorsCollection = collection(db, 'collector');
+    const collectorsCollection = collection(db, "collector");
 
     try {
       // Add a new document with collectorEmail and collectorName
@@ -20,23 +20,23 @@ function AddCollector() {
         collectorEmail: collectorEmail,
         collectorName: collectorName,
       });
-      alert('Collector added successfully!');
-      setCollectorEmail('');
-      setCollectorName('');
+      alert("Collector added successfully!");
+      setCollectorEmail("");
+      setCollectorName("");
     } catch (error) {
-      console.error('Error adding collector: ', error);
-      alert('Failed to add collector');
+      console.error("Error adding collector: ", error);
+      alert("Failed to add collector");
     }
   };
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f4f6f9',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f4f6f9",
       }}
     >
       <Paper
@@ -45,7 +45,7 @@ function AddCollector() {
           padding: 4,
           maxWidth: 600,
           borderRadius: 3,
-          backgroundColor: '#ffffff',
+          backgroundColor: "#ffffff",
         }}
       >
         <Typography
@@ -55,8 +55,8 @@ function AddCollector() {
           gutterBottom
           sx={{
             fontWeight: 600,
-            color: '#37474f',
-            textTransform: 'uppercase',
+            color: "#37474f",
+            textTransform: "uppercase",
           }}
         >
           Add Collector
@@ -73,14 +73,14 @@ function AddCollector() {
               required
               sx={{
                 marginBottom: 2,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px',
-                  backgroundColor: '#f9f9f9',
-                  '& fieldset': {
-                    borderColor: '#bdbdbd',
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  backgroundColor: "#f9f9f9",
+                  "& fieldset": {
+                    borderColor: "#bdbdbd",
                   },
-                  '&:hover fieldset': {
-                    borderColor: '#37474f',
+                  "&:hover fieldset": {
+                    borderColor: "#37474f",
                   },
                 },
               }}
@@ -94,14 +94,14 @@ function AddCollector() {
               required
               sx={{
                 marginBottom: 2,
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '12px',
-                  backgroundColor: '#f9f9f9',
-                  '& fieldset': {
-                    borderColor: '#bdbdbd',
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  backgroundColor: "#f9f9f9",
+                  "& fieldset": {
+                    borderColor: "#bdbdbd",
                   },
-                  '&:hover fieldset': {
-                    borderColor: '#37474f',
+                  "&:hover fieldset": {
+                    borderColor: "#37474f",
                   },
                 },
               }}
@@ -115,13 +115,13 @@ function AddCollector() {
             fullWidth
             sx={{
               padding: 2,
-              borderRadius: '12px',
-              fontSize: '16px',
-              backgroundColor: '#00796b',
-              '&:hover': {
-                backgroundColor: '#004d40',
+              borderRadius: "12px",
+              fontSize: "16px",
+              backgroundColor: "#00796b",
+              "&:hover": {
+                backgroundColor: "#004d40",
               },
-              transition: 'background-color 0.3s ease',
+              transition: "background-color 0.3s ease",
             }}
           >
             Add Collector

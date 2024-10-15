@@ -1,12 +1,12 @@
-import React from 'react'
-import AllSchedules from '../../../components/dataAnalysisAndReporting/AllSchedules'
+import React from "react";
+import AllSchedules from "../../../components/dataAnalysisAndReporting/AllSchedules";
 
 function AllScheduledRoutes() {
   return (
     <>
-    <AllSchedules/>
+      <AllSchedules />
     </>
-  )
+  );
 }
 
-export default AllScheduledRoutes
+export default AllScheduledRoutes;

@@ -1,12 +1,12 @@
-import React from 'react'
-import AllStaff from '../../../components/dataAnalysisAndReporting/AllStaff'
+import React from "react";
+import AllStaff from "../../../components/dataAnalysisAndReporting/AllStaff";
 
 function ViewStaff() {
   return (
     <>
-    <AllStaff/>
+      <AllStaff />
     </>
-  )
+  );
 }
 
-export default ViewStaff
+export default ViewStaff;

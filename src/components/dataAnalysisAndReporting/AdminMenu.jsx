@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 function AdminMenu() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -28,19 +28,16 @@ function AdminMenu() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <a className="navbar-brand" href="#">
-          <img
-            src={''}
-            alt="Logo"
-            height="50"
-            width={130}
-          />
+        <a className="t-font-bold t-text-green-700 t-text-2xl" href="#">
+          Clean City
         </a>
       </nav>
 
-      <div className={`d-flex ${sidebarVisible ? 'show-sidebar' : ''}`}>
+      <div className={`d-flex ${sidebarVisible ? "show-sidebar" : ""}`}>
         {/* Sidebar */}
-        <nav className={`crm-sidebar bg-light ${sidebarVisible ? 'active' : ''}`}>
+        <nav
+          className={`crm-sidebar bg-light ${sidebarVisible ? "active" : ""}`}
+        >
           <ul className="nav flex-column">
             <li className="nav-item">
               <NavLink
@@ -62,7 +59,9 @@ function AdminMenu() {
                 Staff Management
               </a>
               {staffDropdownVisible && (
-                <ul className="nav flex-column ml-3"> {/* Indented submenu */}
+                <ul className="nav flex-column ml-3">
+                  {" "}
+                  {/* Indented submenu */}
                   <li className="nav-item">
                     <NavLink
                       to="/admin/addStaff"
